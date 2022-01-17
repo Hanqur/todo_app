@@ -5,14 +5,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// структура, необходимая для установления зависимостей
 type Handler struct {
 	services *service.Service
 }
 
+// создаем объект Handler
 func NewHandler(services *service.Service) *Handler {
 	return &Handler{services: services}
 }
 
+// создаем роутер(gin) и инициализируем эндпоинты
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 
@@ -22,23 +25,27 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/sign-in", h.signIn)
 	}
 
-	api := router.Group("/api")
+	api := router.Group("/api", h.userIdentity)
 	{
-		lists := router.Group("/lists")
+		lists := api.Group("/lists")
 		{
 			lists.POST("/", h.createList)
 			lists.GET("/", h.getAllLists)
 			lists.GET("/:id", h.getListById)
 			lists.PUT("/:id", h.updateList)
 			lists.DELETE("/:id", h.deleteList)
-			items := api.Group(":id/items")
+			items := lists.Group(":id/items")
 			{
 				items.POST("/", h.createItem)
 				items.GET("/", h.getAllItems)
-				items.GET("/:item_id", h.getItemById)
-				items.PUT("/:item_id", h.updateItem)
-				items.DELETE("/:item_id", h.deleteItem)
 			}
+		}
+
+		items := api.Group("/items")
+		{
+			items.GET("/:id", h.getItemById)
+			items.PUT("/:id", h.updateItem)
+			items.DELETE("/:id", h.deleteItem)
 		}
 	}
 
