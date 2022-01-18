@@ -24,7 +24,7 @@ func main() {
 	var c conf
     c.getConf()
 
-    fmt.Println(c.DB.Port)
+    //fmt.Println(c.DB.Port)
 
 	// задаём формат логов 
 	logrus.SetFormatter(new(logrus.JSONFormatter))
