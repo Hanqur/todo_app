@@ -1,8 +1,8 @@
 package main
 
 import (
+	
 	"context"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -53,9 +53,9 @@ func main() {
 		Host: c.DB.Host,
 		Port: c.DB.Port,
 		Username: c.DB.Username,
-		Password: os.Getenv("DB_PASSWORD"),
+		Password: c.DB.Password,
 		DBName: c.DB.Dbname,
-		SSLMode: c.DB.Sslmode,
+		//SSLMode: c.DB.Sslmode,
 	})
 	if err != nil {
 		logrus.Fatal("failed to initialize db: ", err.Error())
@@ -71,7 +71,7 @@ func main() {
 	// запускаем сервер
 	srv := new(todo_app.Server)
 	go func () {
-		if err := srv.Run(c.Port, handlers.InitRoutes()); err != nil {
+		if err := srv.Run(os.Getenv("PORT"), handlers.InitRoutes()); err != nil {
 			logrus.Fatal("error with running http server:", err.Error())
 	
 		}
