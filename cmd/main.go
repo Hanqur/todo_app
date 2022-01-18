@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -13,23 +16,30 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
+	"gopkg.in/yaml.v2"
 )
 
 func main() {
 
+	var c conf
+    c.getConf()
+
+    fmt.Println(c.DB.Port)
+
 	// задаём формат логов 
 	logrus.SetFormatter(new(logrus.JSONFormatter))
+	/*
 	if err := initConfig(); err != nil {
 		logrus.Fatal("error initializing configs:", err.Error())
 	}
-
+	*/
 	// подгружаем .env файл
 	if err := godotenv.Load(); err != nil {
 		logrus.Fatal("error loading env variable: ", err.Error())
 	}
-
+	
 	// запускаем базу данных
+	/*
 	db, err := repository.NewPostrgesDB(repository.Config{
 		Host: viper.GetString("db.host"),
 		Port: viper.GetString("db.port"),
@@ -38,8 +48,18 @@ func main() {
 		DBName: viper.GetString("db.dbname"),
 		SSLMode: viper.GetString("db.sslmode"),
 	})
+	*/
+	db, err := repository.NewPostrgesDB(repository.Config{
+		Host: c.DB.Host,
+		Port: c.DB.Port,
+		Username: c.DB.Username,
+		Password: os.Getenv("DB_PASSWORD"),
+		DBName: c.DB.Dbname,
+		SSLMode: c.DB.Sslmode,
+	})
 	if err != nil {
 		logrus.Fatal("failed to initialize db: ", err.Error())
+		
 	}
 
 	// устанавливаем зависимости
@@ -51,7 +71,7 @@ func main() {
 	// запускаем сервер
 	srv := new(todo_app.Server)
 	go func () {
-		if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
+		if err := srv.Run(c.Port, handlers.InitRoutes()); err != nil {
 			logrus.Fatal("error with running http server:", err.Error())
 	
 		}
@@ -77,8 +97,40 @@ func main() {
 }
 
 // читаем config
+/*
 func initConfig() error {
 	viper.AddConfigPath("configs")
 	viper.SetConfigName("config")
 	return viper.ReadInConfig()
 }
+*/
+
+
+type conf struct {
+    Port string  `yaml:"port"`
+    DB struct {
+		Username string `yaml:"username"`
+		Password string `yaml:"password"`
+		Host string `yaml:"host"`
+		Port string `yaml:"port"`
+		Dbname string `yaml:"dbname"`
+		Sslmode string `yaml:"sslmode"`
+	}
+}
+
+func (c *conf) getConf() *conf {
+
+    yamlFile, err := ioutil.ReadFile("configs/config.yml")
+    if err != nil {
+        log.Printf("yamlFile.Get err   #%v ", err)
+    }
+    err = yaml.Unmarshal(yamlFile, c)
+    if err != nil {
+        log.Fatalf("Unmarshal: %v", err)
+    }
+
+    return c
+}
+
+
+
