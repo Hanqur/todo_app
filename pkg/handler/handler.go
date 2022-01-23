@@ -17,7 +17,7 @@ func NewHandler(services *service.Service) *Handler {
 
 // создаем роутер(gin) и инициализируем эндпоинты
 func (h *Handler) InitRoutes() *gin.Engine {
-	router := gin.New()
+	router := gin.New() 
 
 	auth := router.Group("/auth")
 	{
