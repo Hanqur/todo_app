@@ -14,9 +14,9 @@ const (
 	userCtx = "userId"
 )
 
+// проверка токена авторизации
 func (h *Handler) userIdentity(c *gin.Context) {
-	header := c.GetHeader(authorizationHeader)
-	//fmt.Println(header)
+	header := c.GetHeader(authorizationHeader) // получение токена
 	if header == "" {
 		newErrorResponse(c, http.StatusUnauthorized, "empty auth header")
 		return

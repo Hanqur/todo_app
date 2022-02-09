@@ -26,10 +26,16 @@ type TodoItem interface {
 	DeleteItem(userId int, itemId int) error
 }
 
+type Tag interface {
+	CreateTag(itemId int, input todo_app.Tag) (int, error)
+	GetAllTags(userId int, itemId int) ([]todo_app.Tag, error)
+}
+
 type Repository struct {
 	Authorization
 	TodoList
 	TodoItem
+	Tag
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -37,5 +43,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Authorization: NewAuthPostgres(db),
 		TodoList: NewTodoListPostgres(db),
 		TodoItem: NewTodoItemPostgres(db),
+		Tag: NewTagPostgres(db),
 	}
 }

@@ -51,10 +51,8 @@ func (s *AuthService) GenerateToken(username, password string) (string, error) {
 	// получение пользователя из базы
 	user, err := s.repo.GetUser(username, s.generatePasswordHash(password))
 	if err != nil {
-		fmt.Println("tut")
 		return "", err
 	}
-
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{ 
 		jwt.StandardClaims{

@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/Hanqur/todo_app"
 	"github.com/Hanqur/todo_app/pkg/repository"
 )
@@ -35,6 +37,10 @@ func (s *TodoItemService) GetItemById(userId int, itemId int) (todo_app.Item, er
 }
 
 func (s *TodoItemService) UpdateItem(userId int, itemId int, input todo_app.UpdateItemInput) error {
+	fmt.Println("Hello from service")
+	if err := input.Validate(); err != nil {
+		return err
+	}
 	return s.repo.UpdateItem(userId, itemId, input)
 }
 

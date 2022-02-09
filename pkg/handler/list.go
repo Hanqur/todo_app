@@ -37,6 +37,8 @@ type getAllListsResponse struct {
 }
 
 func (h *Handler) getAllLists(c *gin.Context) {
+	
+
 	userId, err := getUserId(c)
 	if err != nil {
 		return
@@ -47,10 +49,11 @@ func (h *Handler) getAllLists(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-
+	
 	c.JSON(http.StatusOK, getAllListsResponse{
 		Data: lists,
 	})
+	
 }
 
 
@@ -121,4 +124,8 @@ func (h *Handler) deleteList(c *gin.Context) {
 	c.JSON(http.StatusOK, statusResponse{
 		Status: "ok",
 	})
+}
+
+func (h *Handler) listsShow(c *gin.Context) {
+	c.HTML(http.StatusOK, "lists.html", nil)
 }

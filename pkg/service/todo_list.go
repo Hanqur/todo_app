@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/Hanqur/todo_app"
 	"github.com/Hanqur/todo_app/pkg/repository"
 )
@@ -30,6 +32,7 @@ func (s *TodoListService) DeleteList(userId int, listId int) error {
 }
 
 func (s *TodoListService) UpdateList(userId int, listId int, input todo_app.UpdateListInput) error {
+	fmt.Println("Hello from service")
 	if err := input.Validate(); err != nil {
 		return err
 	}

@@ -27,10 +27,16 @@ type TodoItem interface {
 	DeleteItem(userId int, itemId int) error
 }
 
+type Tag interface {
+	CreateTag(userId int, itemId int, input todo_app.Tag) (int, error)
+	GetAllTags(userId int, itemId int) ([]todo_app.Tag, error)
+}
+
 type Service struct {
 	Authorization
 	TodoList
 	TodoItem
+	Tag
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -38,5 +44,6 @@ func NewService(repos *repository.Repository) *Service {
 		Authorization: NewAuthService(repos.Authorization),
 		TodoList: NewTodoListService(repos.TodoList),
 		TodoItem: NewTodoItemService(repos.TodoItem, repos.TodoList),
+		Tag: NewTagService(repos.Tag, repos.TodoItem),
 	}
 }
