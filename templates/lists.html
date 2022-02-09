@@ -208,7 +208,7 @@
           <div class="modal-content" style="box-shadow: 2px 2px 21px black;">
             <div class="modal-header">
               <h5 class="modal-title">Редактирование задачи</h5>
-              <button id="editItemCloseButton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button id="editItemCloseButton" type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             
             <form id="editItemFormElem" class="needs-validation" novalidate>
@@ -293,30 +293,9 @@
     let editItemButton = document.getElementById('editItemButton');
 
     let newTagModal = document.getElementById('newTagModal');
-    let newTagCloseButton = document.getElementById('editItemCloseButton');
-    let newTagCloseButton2 = document.getElementById('editItemCloseButton2');
-    let newTagButton = document.getElementById('editItemButton');
-   
-    closeDeleteItem.onclick = function() {
-      deleteItemModal.style.display = "none";
-    };
-    closeDeleteItem2.onclick = function() {
-      deleteItemModal.style.display = "none";
-    };
-
-    editItemCloseButton.onclick = function() {
-      editItemModal.style.display = "none";
-    };
-    editItemCloseButton2.onclick = function() {
-      editItemModal.style.display = "none";
-    };
-
-    newTagCloseButton.onclick = function() {
-      newTagModal.style.display = "none";
-    };
-    newTagCloseButton2.onclick = function() {
-      newTagModal.style.display = "none";
-    };
+    let newTagCloseButton = document.getElementById('newTagCloseButton');
+    let newTagCloseButton2 = document.getElementById('newTagCloseButton2');
+    let newTagButton = document.getElementById('newTagButton');
         
     let arrOfItems = new Array();
     for (let i = 0; i < arrOfShowButtons.length; i ++) {
@@ -339,8 +318,8 @@
             <li class="list-group-item">
               <input class="form-check-input" type="checkbox" value="">
               ${item.title}   ${item.description}  ${item.deadline}
-              <button id="${item.id}" class="btn newTagButton"><i class="fa fa-tags" aria-hidden="true"></i></button>
-              <button id="${item.id}" class="btn editItemButton"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+              <button id="${item.id}" class="btn newTagButton"><i class="fa fa-tags"></i></button>
+              <button id="${item.id}" class="btn editItemButton"><i class="fa fa-pencil"></i></button>
               <button id="${item.id}" class="btn deleteItemButton"><i class="fa fa-trash"></i></button>
               </li>
             ` 
@@ -352,37 +331,31 @@
           arrOfItemIcons[i].classList.toggle('fa-chevron-up');
           arrOfItemIcons[i].classList.toggle('fa-chevron-down');
 
-          
-
-          let arrOfDeleteItemsButtons = document.getElementsByClassName("deleteItemButton");
-          console.log(arrOfDeleteItemsButtons.length);
-          for (let i = 0; i < arrOfDeleteItemsButtons.length; i ++) {
-            arrOfDeleteItemsButtons[i].addEventListener('click', function() {
-
-
-              deleteItemModal.style.display = "block";
-
-              confirmDeleteItem.onclick = function() {
-
-                deleteItemModal.style.display = "none";
-
-                var xhr = new XMLHttpRequest();
-                endpoint = '/api/items/'+ arrOfDeleteItemsButtons[i].id;
-                xhr.open('DELETE', endpoint, false);
-                xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
-                xhr.send();
-                if (xhr.status != 200) {
-                  alert("Не получилось удалить список");
-                } else {
-                  window.location.replace('../user_lists');
-                }
-              };
-            })
+          closeDeleteItem.onclick = function() {
+            deleteItemModal.style.display = "none";
           };
-          
+          closeDeleteItem2.onclick = function() {
+            deleteItemModal.style.display = "none";
+          };
+
+          editItemCloseButton.onclick = function() {
+            editItemModal.style.display = "none";
+          };
+          editItemCloseButton2.onclick = function() {
+            editItemModal.style.display = "none";
+          };
+
+          newTagCloseButton.onclick = function() {
+            newTagModal.style.display = "none";
+          };
+          newTagCloseButton2.onclick = function() {
+            newTagModal.style.display = "none";
+          };
+        
           let arrOfEditItemsButtons = document.getElementsByClassName("editItemButton");
           for (let i = 0; i < arrOfEditItemsButtons.length; i ++) {
             arrOfEditItemsButtons[i].addEventListener('click', function() {
+              
               editItemModal.style.display = "block";
 
               editItemFormElem.onsubmit = async (e) => {
@@ -412,7 +385,32 @@
                 }
               } 
             })
-          }
+          };
+
+          let arrOfDeleteItemsButtons = document.getElementsByClassName("deleteItemButton");
+          for (let i = 0; i < arrOfDeleteItemsButtons.length; i ++) {
+            arrOfDeleteItemsButtons[i].addEventListener('click', function() {
+
+              deleteItemModal.style.display = "block";
+
+              confirmDeleteItem.onclick = function() {
+
+                deleteItemModal.style.display = "none";
+
+                var xhr = new XMLHttpRequest();
+                endpoint = '/api/items/'+ arrOfDeleteItemsButtons[i].id;
+                xhr.open('DELETE', endpoint, false);
+                xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
+                xhr.send();
+                if (xhr.status != 200) {
+                  alert("Не получилось удалить список");
+                } else {
+                  window.location.replace('../user_lists');
+                }
+              };
+            })
+          };
+
           let arrOfNewTagButtons = document.getElementsByClassName("newTagButton");
           for (let i = 0; i < arrOfEditItemsButtons.length; i ++) {
             arrOfNewTagButtons[i].addEventListener('click', function() {
