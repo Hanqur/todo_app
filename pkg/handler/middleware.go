@@ -16,6 +16,7 @@ const (
 
 // проверка токена авторизации
 func (h *Handler) userIdentity(c *gin.Context) {
+	fmt.Println("userIdentity")
 	header := c.GetHeader(authorizationHeader) // получение токена
 	if header == "" {
 		newErrorResponse(c, http.StatusUnauthorized, "empty auth header")
@@ -26,6 +27,16 @@ func (h *Handler) userIdentity(c *gin.Context) {
 	fmt.Println(headerParts)
 	if len(headerParts) != 2 {
 		newErrorResponse(c, http.StatusUnauthorized, "invalid auth header")
+		return
+	}
+
+	if headerParts[0] != "Bearer" {
+		newErrorResponse(c, http.StatusUnauthorized, "invalid auth header")
+		return
+	}
+
+	if headerParts[1] == "" {
+		newErrorResponse(c, http.StatusUnauthorized, "token is empty")
 		return
 	}
 

@@ -49,7 +49,7 @@ func (r *TodoListPostgres) GetAllLists(userId int) ([]todo_app.TodoList, error) 
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	fmt.Println(lists)
 	return lists, err
 }
 
